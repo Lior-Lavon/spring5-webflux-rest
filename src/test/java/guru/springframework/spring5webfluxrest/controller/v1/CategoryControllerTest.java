@@ -1,6 +1,7 @@
 package guru.springframework.spring5webfluxrest.controller.v1;
 
 import guru.springframework.spring5webfluxrest.domain.Category;
+import guru.springframework.spring5webfluxrest.domain.Vendor;
 import guru.springframework.spring5webfluxrest.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,8 +67,8 @@ class CategoryControllerTest {
     @Test
     void postCategory() {
 
-        Flux<Category> categoryFlux = Flux.just(Category.builder().build());
-        BDDMockito.given(categoryService.saveAll(any(Publisher.class))).willReturn(categoryFlux);
+        Mono<Category> categoryMono = Mono.just(Category.builder().build());
+        BDDMockito.given(categoryService.save(any(Category.class))).willReturn(categoryMono);
 
         Mono<Category> catToSaveMono = Mono.just(Category.builder().description("some description").build());
 
@@ -91,4 +92,23 @@ class CategoryControllerTest {
                 .expectStatus().isOk()
                 .expectBody(Category.class);
     }
+
+    @Test
+    void patch() {
+
+        Mono<Category> catToSaveMono = Mono.just(Category.builder().id("1").description("lavon").build());
+
+        BDDMockito.given(categoryService.findById(anyString())).willReturn(Mono.just(Category.builder().build()));
+        BDDMockito.given((categoryService.save(any(Category.class)))).willReturn(catToSaveMono);
+
+        Mono<Category> catToUpdateMono = Mono.just(Category.builder().description("lavon").build());
+
+        webTestClient.patch()
+                .uri("/api/v1/categories/anyString")
+                .body(catToUpdateMono, Category.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Category.class);
+    }
+
 }

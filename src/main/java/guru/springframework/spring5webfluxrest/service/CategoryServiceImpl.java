@@ -3,6 +3,7 @@ package guru.springframework.spring5webfluxrest.service;
 import guru.springframework.spring5webfluxrest.api.v1.mapper.CategoryMapper;
 import guru.springframework.spring5webfluxrest.api.v1.model.CategoryDTO;
 import guru.springframework.spring5webfluxrest.domain.Category;
+import guru.springframework.spring5webfluxrest.domain.Vendor;
 import guru.springframework.spring5webfluxrest.repository.CategoryRepository;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Flux<Category> saveAll(Publisher<Category> categoryStream) {
-        return categoryRepository.saveAll(categoryStream);
+    public Mono<Category> save(Category category) {
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -40,4 +41,17 @@ public class CategoryServiceImpl implements CategoryService {
         category.setId(id);
         return categoryRepository.save(category);
     }
+
+    @Override
+    public Mono<Category> updateAttribute(String id, Category category) {
+
+        return categoryRepository.findById(id)
+                .flatMap(category1 -> {
+                    if(category.getDescription()!=null){
+                        category1.setDescription(category.getDescription());
+                    }
+                    return categoryRepository.save(category1);
+                });
+    }
+
 }

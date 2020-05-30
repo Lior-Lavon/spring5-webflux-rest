@@ -36,13 +36,19 @@ public class CategoryController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Void> create(@RequestBody Publisher<Category> categoryStream){
-        return categoryService.saveAll(categoryStream).then();
+    public Mono<Category> create(@RequestBody Category category){
+        return categoryService.save(category);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<Category> update(@PathVariable String id, @RequestBody Category category){
         return categoryService.update(id, category);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Category> updateAttribute(@PathVariable String id, @RequestBody Category category){
+        return categoryService.updateAttribute(id, category);
     }
 }
