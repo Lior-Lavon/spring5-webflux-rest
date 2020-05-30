@@ -30,14 +30,9 @@ class CategoryControllerTest {
     @InjectMocks
     CategoryController categoryController;
 
-//    MockMvc mockMvc;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-
-//        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
-//                .build();
 
         // setting up WebTestClient
         webTestClient = WebTestClient.bindToController(categoryController).build();
@@ -81,5 +76,19 @@ class CategoryControllerTest {
                 .body(catToSaveMono, Category.class)
                 .exchange()
                 .expectStatus().isCreated();
+    }
+
+    @Test
+    void update() {
+
+        Mono<Category> categoryMono = Mono.just(Category.builder().description("some value").build());
+        BDDMockito.given(categoryService.update("1", Category.builder().build())).willReturn(categoryMono);
+
+        webTestClient.put()
+                .uri("/api/v1/categories/someid")
+                .body(categoryMono, Category.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Category.class);
     }
 }

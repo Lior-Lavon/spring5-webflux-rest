@@ -13,4 +13,6 @@ public interface CategoryService {
     Mono<Category> findById(String id);
 
     Flux<Category> saveAll(Publisher<Category> categoryStream);
+
+    Mono<Category> update(String id, Category category);
 }

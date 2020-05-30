@@ -34,4 +34,10 @@ public class CategoryServiceImpl implements CategoryService {
     public Flux<Category> saveAll(Publisher<Category> categoryStream) {
         return categoryRepository.saveAll(categoryStream);
     }
+
+    @Override
+    public Mono<Category> update(String id, Category category) {
+        category.setId(id);
+        return categoryRepository.save(category);
+    }
 }

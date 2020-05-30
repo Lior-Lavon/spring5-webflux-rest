@@ -8,6 +8,7 @@ import guru.springframework.spring5webfluxrest.service.CategoryService;
 import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -37,5 +38,11 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Void> create(@RequestBody Publisher<Category> categoryStream){
         return categoryService.saveAll(categoryStream).then();
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<Category> update(@PathVariable String id, @RequestBody Category category){
+        return categoryService.update(id, category);
     }
 }
